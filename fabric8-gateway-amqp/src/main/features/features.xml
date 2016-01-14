@@ -22,6 +22,7 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="fabric8-gateway-amqp-${project.version}">
 
     <feature name="fabric8-gateway-amqp" version="${project.version}" resolver="(obr)">
+        <bundle>mvn:org.apache.aries.jmx/org.apache.aries.jmx.whiteboard/1.0.0</bundle>
         <bundle>mvn:com.garethahealy.loadbalancer-healthchecks/fabric8-gateway-amqp/${project.version}</bundle>
     </feature>
 
