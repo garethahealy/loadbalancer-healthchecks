@@ -21,7 +21,6 @@ package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
 import org.junit.Test;
@@ -37,14 +36,11 @@ public class IsAliveFalseTest extends CamelBlueprintTestSupport {
         return "OSGI-INF/blueprint/camel-context.xml";
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void amqpIsDown() throws InterruptedException {
         //Wait for the first quartz timer to tick
         TimeUnit.SECONDS.sleep(5);
-        
-        Object body = template.sendBody("http://localhost:8080/amqp-healthcheck", ExchangePattern.InOut, new String(""));
 
-        Assert.assertNotNull(body);
-        Assert.assertFalse(Boolean.parseBoolean(context.getTypeConverter().convertTo(String.class, body)));
+        template.sendBody("http://localhost:8080/amqp-healthcheck", ExchangePattern.InOut, new String(""));
     }
 }

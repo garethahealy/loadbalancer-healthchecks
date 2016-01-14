@@ -48,6 +48,19 @@
         <route id="loadbalancerHeartBeatCheck">
             <from uri="jetty://http://0.0.0.0:8080/amqp-healthcheck"/>
             <bean ref="defaultHealthCheckService" method="isAlive"/>
+            <choice>
+                <when>
+                    <simple>${body}</simple>
+                    <setHeader headerName="CamelHttpResponseCode">
+                        <constant>200</constant>
+                    </setHeader>
+                </when>
+                <otherwise>
+                    <setHeader headerName="CamelHttpResponseCode">
+                        <constant>500</constant>
+                    </setHeader>
+                </otherwise>
+            </choice>
         </route>
 
         <route id="tickAndSendAMQPMessage">
