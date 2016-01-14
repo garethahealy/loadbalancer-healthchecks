@@ -9,4 +9,4 @@ Set loadbalancer to:
 
 - Mime: GET
 - URL: http://{gateway-ip}:8080/amqp-healthcheck
-- Response: HTTPCode == 200 &&  Body == true
+- Response: HTTPCode == 200 &&  BodyContent == true
