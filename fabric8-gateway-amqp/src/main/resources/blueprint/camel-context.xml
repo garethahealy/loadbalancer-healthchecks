@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP
+  %%
+  Copyright (C) 2013 - 2015 Gareth Healy
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <!-- Aries whiteboard -->
+    <service ref="defaultHealthCheckService" interface="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.HealthCheckService">
+        <service-properties>
+            <entry key="jmx.objectname" value="com.garethahealy:beans=fabric8-gateway-amqp-context,type=beans,name=HealthCheckService"/>
+        </service-properties>
+    </service>
+
+    <bean id="defaultHealthCheckService" class="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.DefaultHealthCheckService"/>
+
+    <bean id="amqpConnectionFactory" class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
+        <argument index="0" value="amqp://admin:admin@localhost:5672" />
+        <property name="topicPrefix" value="topic://" />
+    </bean>
+
+    <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+        <property name="connectionFactory" ref="amqpConnectionFactory"/>
+    </bean>
+
+    <camelContext id="fabric8-gateway-amqp-context" trace="false" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <route id="loadbalancerHeartBeatCheck">
+            <from uri="jetty://http://0.0.0.0:8080/amqp-healthcheck"/>
+            <bean ref="defaultHealthCheckService" method="isAlive"/>
+        </route>
+
+        <route id="tickAndSendAMQPMessage">
+            <from uri="quartz2://tickAndSendAMQPMessage?cron=0/5+*+*+*+*+?"/>
+            <setBody>
+                <simple>amqp-healthcheck-${date:now:yyyyMMddssSSS}</simple>
+            </setBody>
+            <bean ref="defaultHealthCheckService" method="incrementSentCount"/>
+            <to uri="amqp:queue:loadbalancer.heartbeat"/>
+        </route>
+
+        <route id="tickAndSendAMQPMessage">
+            <from uri="amqp:queue:loadbalancer.heartbeat"/>
+            <bean ref="defaultHealthCheckService" method="incrementReceivedCount"/>
+        </route>
+
+    </camelContext>
+
+</blueprint>

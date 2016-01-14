@@ -1,0 +1,57 @@
+Apache Maven 3.2.3 (33f8c3e1027c3ddde99d3cdebad2656a31e8fdf4; 2014-08-11T21:58:10+01:00)
+Maven home: /Users/garethah/Documents/dev/utils/apache-maven-3.2.3
+Java version: 1.8.0_65, vendor: Oracle Corporation
+Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "mac os x", version: "10.11.2", arch: "x86_64", family: "mac"
+[INFO] Error stacktraces are turned on.
+[DEBUG] Reading global settings from /Users/garethah/Documents/dev/utils/apache-maven-3.2.3/conf/settings.xml
+[DEBUG] Reading user settings from /Users/garethah/.m2/settings.xml
+[DEBUG] Using local repository at /Users/garethah/.m2/repository
+[DEBUG] Using manager EnhancedLocalRepositoryManager with priority 10.0 for /Users/garethah/.m2/repository
+[INFO] Scanning for projects...
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (http://central).
+[DEBUG] Skipped remote update check for com.garethahealy:camel-parent:1.1.1-SNAPSHOT/maven-metadata.xml, locally installed metadata up-to-date.
+[DEBUG] Skipped remote update check for com.garethahealy:osgi-parent:1.1.1-SNAPSHOT/maven-metadata.xml, locally installed metadata up-to-date.
+[DEBUG] Skipped remote update check for com.garethahealy:osgi-plugins-parent:1.1.1-SNAPSHOT/maven-metadata.xml, locally installed metadata up-to-date.
+[DEBUG] Skipped remote update check for com.garethahealy:plugins-parent:1.1.1-SNAPSHOT/maven-metadata.xml, locally installed metadata up-to-date.
+[DEBUG] Skipped remote update check for com.garethahealy:projects-pom:1.1.1-SNAPSHOT/maven-metadata.xml, locally installed metadata up-to-date.
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for repository.redhat.com (https://maven.repository.redhat.com/techpreview/all/).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for fusesource.jboss.com (https://repository.jboss.org/nexus/content/groups/fs-public/).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for fusesource-releases.jboss.com (https://repository.jboss.org/nexus/content/repositories/fs-releases/).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for sonatype-nexus-snapshots (https://oss.sonatype.org/content/repositories/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (http://central).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for repository.redhat.com (https://maven.repository.redhat.com/techpreview/all/).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for fusesource.jboss.com (https://repository.jboss.org/nexus/content/groups/fs-public/).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for fusesource-releases.jboss.com (https://repository.jboss.org/nexus/content/repositories/fs-releases/).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for sonatype-nexus-snapshots (https://oss.sonatype.org/content/repositories/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://repository.apache.org/snapshots).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for apache.snapshots (http://people.apache.org/repo/m2-snapshot-repository).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for central (https://repo.maven.apache.org/maven2).
+[DEBUG] Using mirror nexus (http://localhost:8081/nexus/content/groups/public) for codehaus.snapshots (http://snapshots.repository.codehaus.org).
