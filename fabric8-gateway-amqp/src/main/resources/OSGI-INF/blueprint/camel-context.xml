@@ -56,10 +56,21 @@
                 <simple>amqp-healthcheck-${date:now:yyyyMMddssSSS}</simple>
             </setBody>
             <bean ref="defaultHealthCheckService" method="incrementSentCount"/>
-            <to uri="amqp:queue:loadbalancer.heartbeat"/>
+            <doTry>
+                <to uri="amqp:queue:loadbalancer.heartbeat"/>
+                <bean ref="defaultHealthCheckService" method="resurrect"/>
+                <doCatch>
+                    <exception>java.net.ConnectException</exception>
+                    <handled>
+                        <constant>true</constant>
+                    </handled>
+                    <log message="Exception occurred: ${exception.stacktrace}" loggingLevel="ERROR"/>
+                    <bean ref="defaultHealthCheckService" method="die"/>
+                </doCatch>
+            </doTry>
         </route>
 
-        <route id="tickAndSendAMQPMessage">
+        <route id="receiveAMQPMessage">
             <from uri="amqp:queue:loadbalancer.heartbeat"/>
             <bean ref="defaultHealthCheckService" method="incrementReceivedCount"/>
         </route>

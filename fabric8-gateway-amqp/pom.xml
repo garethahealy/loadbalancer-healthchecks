@@ -15,6 +15,8 @@
     <name>GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP</name>
 
     <properties>
+        <qpid-version>0.28</qpid-version>
+
         <build.osgi.import.before.defaults>
         </build.osgi.import.before.defaults>
         <build.osgi.export.pkg>com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.*</build.osgi.export.pkg>
@@ -27,7 +29,24 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jetty8</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-amqp</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-amqp-1-0-client-jms</artifactId>
+            <version>${qpid-version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -35,11 +54,27 @@
             <artifactId>camel-quartz2</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-amqp</artifactId>
+            <version>${activemq-version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <defaultGoal>install</defaultGoal>
         <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
             <resource>
                 <directory>src/main/features</directory>
                 <filtering>true</filtering>

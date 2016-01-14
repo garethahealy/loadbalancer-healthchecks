@@ -19,6 +19,7 @@
  */
 package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -28,17 +29,38 @@ public class DefaultHealthCheckService implements HealthCheckService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHealthCheckService.class);
 
+    private AtomicBoolean isDead = new AtomicBoolean(false);
     private AtomicInteger messagesSent = new AtomicInteger(0);
     private AtomicInteger messagesReceived = new AtomicInteger(0);
 
     public Boolean isAlive() {
-        Integer difference = messagesSent.get() - messagesReceived.get();
-        Boolean isAlive = difference <= 1;
+        Boolean isAlive;
+        if (isDead.get()) {
+            isAlive = false;
 
-        LOG.debug("Sent - Received difference is {}, thus we think the gateway alive == {}", difference, isAlive);
+            LOG.debug("IsDead == true, thus IsAlive == false");
+        } else {
+            Integer difference = messagesSent.get() - messagesReceived.get();
+            isAlive = difference <= 1;
+
+            LOG.debug("SentCount minus ReceivedCount has a difference of {}; thus IsAlive == {}", difference, isAlive);
+        }
 
         return isAlive;
     }
+
+    public void die() {
+        LOG.debug("Exception occurred; isDead == true");
+
+        isDead.set(true);
+    }
+
+    public void resurrect() {
+        LOG.debug("Resurrecting; isDead == false");
+
+        isDead.set(false);
+    }
+
 
     public void incrementSentCount() {
         messagesSent.incrementAndGet();

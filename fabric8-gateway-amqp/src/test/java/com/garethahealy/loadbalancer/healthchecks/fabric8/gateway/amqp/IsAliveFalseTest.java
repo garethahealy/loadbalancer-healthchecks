@@ -19,11 +19,18 @@
  */
 package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 
+import java.util.concurrent.TimeUnit;
+
 import junit.framework.Assert;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CamelContextTest extends CamelBlueprintTestSupport {
+public class IsAliveFalseTest extends CamelBlueprintTestSupport {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IsAliveFalseTest.class);
 
     @Override
     protected String getBlueprintDescriptor() {
@@ -31,7 +38,13 @@ public class CamelContextTest extends CamelBlueprintTestSupport {
     }
 
     @Test
-    public void canStart() {
-        Assert.assertNotNull(context);
+    public void amqpIsDown() throws InterruptedException {
+        //Wait for the first quartz timer to tick
+        TimeUnit.SECONDS.sleep(5);
+        
+        Object body = template.sendBody("http://localhost:8080/amqp-healthcheck", ExchangePattern.InOut, new String(""));
+
+        Assert.assertNotNull(body);
+        Assert.assertFalse(Boolean.parseBoolean(context.getTypeConverter().convertTo(String.class, body)));
     }
 }
