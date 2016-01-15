@@ -22,6 +22,7 @@ package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +34,25 @@ public class DefaultHealthCheckService implements HealthCheckService {
     private AtomicInteger messagesSent = new AtomicInteger(0);
     private AtomicInteger messagesReceived = new AtomicInteger(0);
 
+    public Boolean isAlive(Exchange exchange) {
+        Boolean isAlive = isAlive();
+        Integer code = isAlive ? 200 : 500;
+
+        exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, code);
+        exchange.getIn().setHeader(Exchange.CONTENT_TYPE, "text/plain; charset=utf-8");
+        exchange.getIn().setHeader("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
+        exchange.getIn().setHeader("Pragma", "no-cache");
+        exchange.getIn().setHeader("Expires", "0");
+
+        return isAlive;
+    }
+
     public Boolean isAlive() {
         Boolean isAlive;
         if (isDead.get()) {
             isAlive = false;
 
-            LOG.debug("IsDead == true, thus IsAlive == false");
+            LOG.warn("Gateway/AMQP is in invalid state.");
         } else {
             Integer difference = messagesSent.get() - messagesReceived.get();
             isAlive = difference <= 1;
@@ -50,7 +64,7 @@ public class DefaultHealthCheckService implements HealthCheckService {
     }
 
     public void die() {
-        LOG.debug("Exception occurred; isDead == true");
+        LOG.warn("Exception occurred sending AMQP payload; isDead == true");
 
         isDead.set(true);
     }

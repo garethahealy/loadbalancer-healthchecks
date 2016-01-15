@@ -19,7 +19,11 @@
  */
 package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 
+import org.apache.camel.Exchange;
+
 public interface HealthCheckService {
+
+    Boolean isAlive(Exchange exchange);
 
     Boolean isAlive();
 

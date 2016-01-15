@@ -48,32 +48,20 @@
         <route id="loadbalancerHeartBeatCheck">
             <from uri="jetty://http://0.0.0.0:8080/amqp-healthcheck"/>
             <bean ref="defaultHealthCheckService" method="isAlive"/>
-            <choice>
-                <when>
-                    <simple>${body}</simple>
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <constant>200</constant>
-                    </setHeader>
-                </when>
-                <otherwise>
-                    <setHeader headerName="CamelHttpResponseCode">
-                        <constant>500</constant>
-                    </setHeader>
-                </otherwise>
-            </choice>
+            <removeHeaders pattern="breadcrumbId"/>
         </route>
 
         <route id="tickAndSendAMQPMessage">
             <from uri="quartz2://tickAndSendAMQPMessage?cron=0/5+*+*+*+*+?"/>
-            <setBody>
-                <simple>amqp-healthcheck-${date:now:yyyyMMddssSSS}</simple>
-            </setBody>
             <bean ref="defaultHealthCheckService" method="incrementSentCount"/>
             <doTry>
-                <to uri="amqp:queue:loadbalancer.heartbeat"/>
+                <setBody>
+                    <simple>amqp-healthcheck-${date:now:yyyyMMddssSSS}</simple>
+                </setBody>
+                <to uri="amqp:queue:loadbalancer.healthcheck"/>
                 <bean ref="defaultHealthCheckService" method="resurrect"/>
                 <doCatch>
-                    <exception>java.net.ConnectException</exception>
+                    <exception>java.lang.Exception</exception>
                     <handled>
                         <constant>true</constant>
                     </handled>
@@ -84,7 +72,9 @@
         </route>
 
         <route id="receiveAMQPMessage">
-            <from uri="amqp:queue:loadbalancer.heartbeat"/>
+            <from uri="amqp:queue:loadbalancer.healthcheck"/>
+            <convertBodyTo type="java.lang.String"/>
+            <log message="Received ${body}" loggingLevel="DEBUG"/>
             <bean ref="defaultHealthCheckService" method="incrementReceivedCount"/>
         </route>
 
