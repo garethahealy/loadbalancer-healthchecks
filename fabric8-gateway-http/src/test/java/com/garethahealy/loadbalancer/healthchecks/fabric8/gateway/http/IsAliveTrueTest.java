@@ -1,6 +1,6 @@
 /*
  * #%L
- * GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP
+ * GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway HTTP
  * %%
  * Copyright (C) 2013 - 2016 Gareth Healy
  * %%
@@ -17,49 +17,43 @@
  * limitations under the License.
  * #L%
  */
-package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
+package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.activemq.broker.BrokerService;
 import org.apache.camel.ExchangePattern;
+import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class IsAliveTrueTest extends CamelBlueprintTestSupport {
-
-    private static BrokerService broker;
 
     @Override
     protected String getBlueprintDescriptor() {
         return "OSGI-INF/blueprint/camel-context.xml";
     }
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        broker = new BrokerService();
-        broker.setPersistent(false);
-        broker.addConnector("amqp://0.0.0.0:5672");
-        broker.start();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        broker.stop();
-    }
-
     @Test
-    public void amqpIsUp() throws InterruptedException {
+    public void httpIsUp() throws Exception {
+        RouteDefinition jettyServer = createFakeJettyServer();
+        context.addRouteDefinition(jettyServer);
+
         for (int i = 0; i < 5; i++) {
-            Object body = template.sendBody("jetty://http://localhost:9001/amqp-healthcheck", ExchangePattern.InOut, new String(""));
+            Object body = template.sendBody("jetty://http://localhost:9001/http-healthcheck", ExchangePattern.InOut, new String(""));
 
             Assert.assertNotNull(body);
             Assert.assertTrue(Boolean.parseBoolean(context.getTypeConverter().convertTo(String.class, body)));
 
             TimeUnit.SECONDS.sleep(5);
         }
+    }
+
+    protected RouteDefinition createFakeJettyServer() throws Exception {
+        RouteDefinition jetty = new RouteDefinition();
+        jetty.from("jetty:http://0.0.0.0:9000/")
+            .setBody().constant("{\"/hawtio-swagger/\":[\"http://10.20.1.21:8183/hawtio-swagger\"]}");
+
+        return jetty;
     }
 }

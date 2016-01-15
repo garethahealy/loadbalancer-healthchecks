@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway HTTP
+  %%
+  Copyright (C) 2013 - 2015 Gareth Healy
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xsi:schemaLocation="
+       http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+       http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd">
+
+    <cm:property-placeholder persistent-id="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="contextCounts" value="[/hawtio-swagger/|1]"/>
+            <cm:property name="gateway.http.port" value="9000"/>
+            <cm:property name="http-healthcheck.port" value="9001"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
+
+    <!-- Aries whiteboard -->
+    <service ref="defaultHealthCheckService" interface="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http.HealthCheckService">
+        <service-properties>
+            <entry key="jmx.objectname" value="com.garethahealy:beans=fabric8-gateway-http-context,type=beans,name=HealthCheckService"/>
+        </service-properties>
+    </service>
+
+    <bean id="contextCount" class="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http.ContextCount" init-method="init">
+        <argument value="${contextCounts}"/>
+    </bean>
+
+    <bean id="defaultHealthCheckService" class="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http.DefaultHealthCheckService">
+        <argument ref="contextCount"/>
+    </bean>
+
+    <camelContext id="fabric8-gateway-http-context" trace="false" xmlns="http://camel.apache.org/schema/blueprint">
+
+        <dataFormats>
+            <json id="jsonMap" library="Jackson" unmarshalTypeName="java.util.Map"/>
+        </dataFormats>
+
+        <route id="loadbalancerHttpMonitorCheck">
+            <from uri="jetty://http://0.0.0.0:{{http-healthcheck.port}}/http-healthcheck"/>
+            <bean ref="defaultHealthCheckService" method="isAlive"/>
+            <removeHeaders pattern="breadcrumbId"/>
+        </route>
+
+        <route id="tickAndGetJsonFromGateway">
+            <from uri="quartz2://tickAndGetJsonFromGateway?cron=0/5+*+*+*+*+?"/>
+            <log message="Ticking...."
+                 loggingLevel="DEBUG"
+                 logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http"/>
+            <doTry>
+                <to uri="jetty://http://localhost:{{gateway.http.port}}"/>
+                <convertBodyTo type="java.lang.String"/>
+                <marshal ref="jsonMap"/>
+                <doCatch>
+                    <exception>java.lang.Exception</exception>
+                    <handled>
+                        <constant>true</constant>
+                    </handled>
+                    <log message="Exception occurred: ${exception.stacktrace}"
+                         loggingLevel="ERROR"
+                         logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http"/>
+                </doCatch>
+            </doTry>
+            <bean ref="defaultHealthCheckService" method="isAlive"/>
+        </route>
+
+    </camelContext>
+
+</blueprint>

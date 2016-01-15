@@ -21,9 +21,18 @@
 
 <blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
            xsi:schemaLocation="
        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
-       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+       http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+       http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd">
+
+    <cm:property-placeholder persistent-id="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="amqp.uri" value="amqp://admin:admin@localhost:5672"/>
+            <cm:property name="amqp-healthcheck.port" value="9001"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
 
     <!-- Aries whiteboard -->
     <service ref="defaultHealthCheckService" interface="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.HealthCheckService">
@@ -35,7 +44,7 @@
     <bean id="defaultHealthCheckService" class="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.DefaultHealthCheckService"/>
 
     <bean id="amqpConnectionFactory" class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
-        <argument index="0" value="amqp://admin:admin@localhost:5672" />
+        <argument index="0" value="${amqp.uri}" />
         <property name="topicPrefix" value="topic://" />
     </bean>
 
@@ -45,14 +54,17 @@
 
     <camelContext id="fabric8-gateway-amqp-context" trace="false" xmlns="http://camel.apache.org/schema/blueprint">
 
-        <route id="loadbalancerHeartBeatCheck">
-            <from uri="jetty://http://0.0.0.0:8080/amqp-healthcheck"/>
+        <route id="loadbalancerAmqpMonitorCheck">
+            <from uri="jetty://http://0.0.0.0:{{amqp-healthcheck.port}}/amqp-healthcheck"/>
             <bean ref="defaultHealthCheckService" method="isAlive"/>
             <removeHeaders pattern="breadcrumbId"/>
         </route>
 
         <route id="tickAndSendAMQPMessage">
             <from uri="quartz2://tickAndSendAMQPMessage?cron=0/5+*+*+*+*+?"/>
+            <log message="Ticking...."
+                 loggingLevel="DEBUG"
+                 logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp"/>
             <bean ref="defaultHealthCheckService" method="incrementSentCount"/>
             <doTry>
                 <setBody>
@@ -65,7 +77,9 @@
                     <handled>
                         <constant>true</constant>
                     </handled>
-                    <log message="Exception occurred: ${exception.stacktrace}" loggingLevel="ERROR"/>
+                    <log message="Exception occurred: ${exception.stacktrace}"
+                         loggingLevel="ERROR"
+                         logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp"/>
                     <bean ref="defaultHealthCheckService" method="die"/>
                 </doCatch>
             </doTry>
@@ -74,7 +88,9 @@
         <route id="receiveAMQPMessage">
             <from uri="amqp:queue:loadbalancer.healthcheck"/>
             <convertBodyTo type="java.lang.String"/>
-            <log message="Received ${body}" loggingLevel="DEBUG"/>
+            <log message="Received ${body}"
+                 loggingLevel="DEBUG"
+                 logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp"/>
             <bean ref="defaultHealthCheckService" method="incrementReceivedCount"/>
         </route>
 

@@ -1,6 +1,6 @@
 /*
  * #%L
- * GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP
+ * GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway HTTP
  * %%
  * Copyright (C) 2013 - 2016 Gareth Healy
  * %%
@@ -17,7 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
+package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http;
+
+import java.util.Map;
 
 import org.apache.camel.Exchange;
 
@@ -27,11 +29,5 @@ public interface HealthCheckService {
 
     Boolean isAlive();
 
-    void incrementSentCount();
-
-    void incrementReceivedCount();
-
-    void die();
-
-    void resurrect();
+    void validateJson(Map json);
 }

@@ -9,19 +9,17 @@
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
-    <artifactId>fabric8-gateway-amqp</artifactId>
+    <artifactId>fabric8-gateway-http</artifactId>
     <packaging>bundle</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    <name>GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP</name>
+    <name>GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway HTTP</name>
 
     <properties>
-        <qpid-version>0.28</qpid-version>
-
         <build.osgi.import.before.defaults>
         </build.osgi.import.before.defaults>
-        <build.osgi.export.pkg>com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.*</build.osgi.export.pkg>
+        <build.osgi.export.pkg>com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http.*</build.osgi.export.pkg>
         <build.osgi.export.service>
-            com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.HealthCheckService
+            com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http.HealthCheckService
         </build.osgi.export.service>
         <build.osgi.activator/>
     </properties>
@@ -34,37 +32,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-amqp</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_1.1_spec</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-amqp-1-0-client-jms</artifactId>
-            <version>${qpid-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-quartz2</artifactId>
+            <artifactId>camel-jackson</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-amqp</artifactId>
-            <version>${activemq-version}</version>
-            <scope>test</scope>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-quartz2</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

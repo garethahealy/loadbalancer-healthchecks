@@ -54,6 +54,7 @@
 
     <modules>
         <module>fabric8-gateway-amqp</module>
+        <module>fabric8-gateway-http</module>
     </modules>
 
 </project>

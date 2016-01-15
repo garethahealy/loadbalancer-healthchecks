@@ -1,6 +1,6 @@
 /*
  * #%L
- * GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP
+ * GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway HTTP
  * %%
  * Copyright (C) 2013 - 2016 Gareth Healy
  * %%
@@ -17,26 +17,21 @@
  * limitations under the License.
  * #L%
  */
-package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
+package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.http;
 
-import java.util.concurrent.TimeUnit;
-
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
+import org.junit.Assert;
 import org.junit.Test;
 
-public class IsAliveFalseTest extends CamelBlueprintTestSupport {
+public class CamelContextTest extends CamelBlueprintTestSupport {
 
     @Override
     protected String getBlueprintDescriptor() {
         return "OSGI-INF/blueprint/camel-context.xml";
     }
 
-    @Test(expected = Exception.class)
-    public void amqpIsDown() throws InterruptedException {
-        //Wait for the first quartz timer to tick
-        TimeUnit.SECONDS.sleep(5);
-
-        template.sendBody("jetty://http://localhost:9001/amqp-healthcheck", ExchangePattern.InOut, new String(""));
+    @Test
+    public void canStart() {
+        Assert.assertNotNull(context);
     }
 }
