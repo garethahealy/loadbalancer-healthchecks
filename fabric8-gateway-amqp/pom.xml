@@ -6,12 +6,11 @@
     <parent>
         <groupId>com.garethahealy.loadbalancer-healthchecks</groupId>
         <artifactId>loadbalancer-healthchecks-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>fabric8-gateway-amqp</artifactId>
     <packaging>bundle</packaging>
-    <version>1.0.0-SNAPSHOT</version>
     <name>GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP</name>
 
     <properties>
