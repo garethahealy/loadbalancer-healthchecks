@@ -29,8 +29,7 @@
 
     <cm:property-placeholder persistent-id="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp" update-strategy="reload">
         <cm:default-properties>
-            <cm:property name="amqp.uri" value="amqp://admin:admin@localhost:5672"/>
-            <cm:property name="amqp-healthcheck.port" value="9001"/>
+            <cm:property name="amqp.uri" value="amqp://localhost:5672"/>
         </cm:default-properties>
     </cm:property-placeholder>
 
@@ -43,9 +42,25 @@
 
     <bean id="defaultHealthCheckService" class="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.DefaultHealthCheckService"/>
 
-    <bean id="amqpConnectionFactory" class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
-        <argument index="0" value="${amqp.uri}" />
-        <property name="topicPrefix" value="topic://" />
+    <bean id="camelServlet" class="org.apache.camel.component.servlet.CamelHttpTransportServlet"/>
+    <service id="serviceCamelServlet" ref="camelServlet" >
+        <interfaces>
+            <value>javax.servlet.Servlet</value>
+            <value>org.apache.camel.component.http.CamelServlet</value>
+        </interfaces>
+
+        <service-properties>
+            <entry key="alias" value="/healthchecks" />
+            <entry key="matchOnUriPrefix" value="true" />
+            <entry key="init.servlet-name" value="CamelServlet"/>
+        </service-properties>
+    </service>
+    
+    <bean id="amqpConnectionFactory" class="org.apache.qpid.jms.JmsConnectionFactory">
+        <argument value="admin"/>
+        <argument value="admin"/>
+        <argument value="${amqp.uri}"/>
+        <property name="topicPrefix" value="topic://"/>
     </bean>
 
     <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
@@ -55,7 +70,7 @@
     <camelContext id="fabric8-gateway-amqp-context" trace="false" xmlns="http://camel.apache.org/schema/blueprint">
 
         <route id="loadbalancerAmqpMonitorCheck">
-            <from uri="jetty://http://0.0.0.0:{{amqp-healthcheck.port}}/amqp-healthcheck"/>
+            <from uri="servlet:///amqp?servletName=CamelServlet"/>
             <bean ref="defaultHealthCheckService" method="isAlive"/>
             <removeHeaders pattern="breadcrumbId"/>
         </route>

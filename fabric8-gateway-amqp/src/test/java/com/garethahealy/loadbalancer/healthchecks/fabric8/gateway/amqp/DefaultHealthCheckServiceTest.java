@@ -19,13 +19,15 @@
  */
 package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 
+import javax.management.NotCompliantMBeanException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class DefaultHealthCheckServiceTest {
 
     @Test
-    public void checkIsAliveTrue() {
+    public void checkIsAliveTrue() throws NotCompliantMBeanException {
         HealthCheckService service = new DefaultHealthCheckService();
         service.incrementSentCount();
         service.incrementReceivedCount();
@@ -34,7 +36,7 @@ public class DefaultHealthCheckServiceTest {
     }
 
     @Test
-    public void checkIsAliveTrueAfter2Sents() {
+    public void checkIsAliveTrueAfter2Sents() throws NotCompliantMBeanException {
         HealthCheckService service = new DefaultHealthCheckService();
         service.incrementSentCount();
         service.incrementSentCount();
@@ -44,7 +46,7 @@ public class DefaultHealthCheckServiceTest {
     }
 
     @Test
-    public void checkIsAliveFalseAfter3Sents() {
+    public void checkIsAliveFalseAfter3Sents() throws NotCompliantMBeanException {
         HealthCheckService service = new DefaultHealthCheckService();
         service.incrementSentCount();
         service.incrementSentCount();

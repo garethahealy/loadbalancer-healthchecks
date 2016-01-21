@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.garethahealy.loadbalancer-healthchecks</groupId>
         <artifactId>loadbalancer-healthchecks-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>fabric8-gateway-amqp</artifactId>
@@ -15,8 +15,10 @@
 
     <properties>
         <qpid-version>0.28</qpid-version>
+        <qpid-jms-client-version>0.6.0</qpid-jms-client-version>
 
         <build.osgi.import.before.defaults>
+            org.apache.qpid.jms
         </build.osgi.import.before.defaults>
         <build.osgi.export.pkg>com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.*</build.osgi.export.pkg>
         <build.osgi.export.service>
@@ -26,11 +28,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jetty8</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-amqp</artifactId>
@@ -44,14 +41,42 @@
         </dependency>
         <dependency>
             <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-amqp-1-0-client-jms</artifactId>
+            <artifactId>qpid-jms-client</artifactId>
+            <version>${qpid-jms-client-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-client</artifactId>
             <version>${qpid-version}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-quartz2</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-servlet</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-http</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>httpunit</groupId>
+            <artifactId>httpunit</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

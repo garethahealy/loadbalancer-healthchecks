@@ -22,17 +22,28 @@ package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.management.NotCompliantMBeanException;
+import javax.management.StandardMBean;
+
 import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultHealthCheckService implements HealthCheckService {
+public class DefaultHealthCheckService extends StandardMBean implements HealthCheckService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHealthCheckService.class);
 
     private AtomicBoolean isDead = new AtomicBoolean(false);
     private AtomicInteger messagesSent = new AtomicInteger(0);
     private AtomicInteger messagesReceived = new AtomicInteger(0);
+
+    protected DefaultHealthCheckService(Class<?> mbeanInterface) throws NotCompliantMBeanException {
+        super(mbeanInterface);
+    }
+
+    public DefaultHealthCheckService() throws NotCompliantMBeanException {
+        this(HealthCheckService.class);
+    }
 
     public Boolean isAlive(Exchange exchange) {
         Boolean isAlive = isAlive();

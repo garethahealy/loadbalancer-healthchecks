@@ -8,5 +8,9 @@ Sends a simple AMQP message and attempts it read it.
 Set loadbalancer to:
 
 - Type: GET
-- URL: http://{gateway-ip}:8080/amqp-healthcheck
+- URL: http://{gateway-ip}:9000/healthchecks/amqp
 - Response: HTTPCode == 200 && BodyContent == true
+
+### Install into Fuse
+features:addurl mvn:com.garethahealy.loadbalancer-healthchecks/fabric8-gateway-amqp/1.0.1-SNAPSHOT/xml/features
+features:install fabric8-gateway-amqp
