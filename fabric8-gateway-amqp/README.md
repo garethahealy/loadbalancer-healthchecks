@@ -8,7 +8,7 @@ Sends a simple AMQP message and attempts it read it.
 Set loadbalancer to:
 
 - Type: GET
-- URL: http://{gateway-ip}:9000/healthchecks/amqp
+- URL: http://{gateway-ip}:9200/amqp-healthcheck
 - Response: HTTPCode == 200 && BodyContent == true
 
 ### Install into Fuse

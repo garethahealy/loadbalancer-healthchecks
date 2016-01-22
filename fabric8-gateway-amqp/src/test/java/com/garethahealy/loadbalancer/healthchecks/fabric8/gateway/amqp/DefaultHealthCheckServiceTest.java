@@ -36,23 +36,22 @@ public class DefaultHealthCheckServiceTest {
     }
 
     @Test
-    public void checkIsAliveTrueAfter2Sents() throws NotCompliantMBeanException {
+    public void checkIsDead() throws NotCompliantMBeanException {
         HealthCheckService service = new DefaultHealthCheckService();
-        service.incrementSentCount();
-        service.incrementSentCount();
-        service.incrementReceivedCount();
+        service.die();
 
-        Assert.assertTrue(service.isAlive());
+        Assert.assertFalse(service.isAlive());
     }
 
     @Test
-    public void checkIsAliveFalseAfter3Sents() throws NotCompliantMBeanException {
+    public void checkCanResurrect() throws NotCompliantMBeanException {
         HealthCheckService service = new DefaultHealthCheckService();
-        service.incrementSentCount();
-        service.incrementSentCount();
-        service.incrementSentCount();
-        service.incrementReceivedCount();
+        service.die();
 
         Assert.assertFalse(service.isAlive());
+
+        service.resurrect();
+
+        Assert.assertTrue(service.isAlive());
     }
 }

@@ -66,7 +66,7 @@ public class DefaultHealthCheckService extends StandardMBean implements HealthCh
             LOG.warn("Gateway/AMQP is in invalid state.");
         } else {
             Integer difference = messagesSent.get() - messagesReceived.get();
-            isAlive = difference <= 1;
+            isAlive = true;
 
             LOG.debug("SentCount minus ReceivedCount has a difference of {}; thus IsAlive == {}", difference, isAlive);
         }

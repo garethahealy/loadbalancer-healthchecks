@@ -30,6 +30,7 @@
     <cm:property-placeholder persistent-id="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp" update-strategy="reload">
         <cm:default-properties>
             <cm:property name="amqp.uri" value="amqp://localhost:5672"/>
+            <cm:property name="amqp-healthcheck.port" value="9200"/>
         </cm:default-properties>
     </cm:property-placeholder>
 
@@ -42,20 +43,6 @@
 
     <bean id="defaultHealthCheckService" class="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp.DefaultHealthCheckService"/>
 
-    <bean id="camelServlet" class="org.apache.camel.component.servlet.CamelHttpTransportServlet"/>
-    <service id="serviceCamelServlet" ref="camelServlet" >
-        <interfaces>
-            <value>javax.servlet.Servlet</value>
-            <value>org.apache.camel.component.http.CamelServlet</value>
-        </interfaces>
-
-        <service-properties>
-            <entry key="alias" value="/healthchecks" />
-            <entry key="matchOnUriPrefix" value="true" />
-            <entry key="init.servlet-name" value="CamelServlet"/>
-        </service-properties>
-    </service>
-    
     <bean id="amqpConnectionFactory" class="org.apache.qpid.jms.JmsConnectionFactory">
         <argument value="admin"/>
         <argument value="admin"/>
@@ -70,9 +57,12 @@
     <camelContext id="fabric8-gateway-amqp-context" trace="false" xmlns="http://camel.apache.org/schema/blueprint">
 
         <route id="loadbalancerAmqpMonitorCheck">
-            <from uri="servlet:///amqp?servletName=CamelServlet"/>
+            <from uri="jetty://http://0.0.0.0:{{amqp-healthcheck.port}}/amqp-healthcheck"/>
             <bean ref="defaultHealthCheckService" method="isAlive"/>
             <removeHeaders pattern="breadcrumbId"/>
+            <log message="Received healthcheck request; returning ${body}"
+                 loggingLevel="DEBUG"
+                 logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp"/>
         </route>
 
         <route id="tickAndSendAMQPMessage">
@@ -86,7 +76,6 @@
                     <simple>amqp-healthcheck-${date:now:yyyyMMddssSSS}</simple>
                 </setBody>
                 <to uri="amqp:queue:loadbalancer.healthcheck"/>
-                <bean ref="defaultHealthCheckService" method="resurrect"/>
                 <doCatch>
                     <exception>java.lang.Exception</exception>
                     <handled>
@@ -107,6 +96,7 @@
                  loggingLevel="DEBUG"
                  logName="com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp"/>
             <bean ref="defaultHealthCheckService" method="incrementReceivedCount"/>
+            <bean ref="defaultHealthCheckService" method="resurrect"/>
         </route>
 
     </camelContext>

@@ -23,10 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class IsAliveFalseTest extends CamelBlueprintTestSupport {
 
     @Override
@@ -39,6 +37,6 @@ public class IsAliveFalseTest extends CamelBlueprintTestSupport {
         //Wait for the first quartz timer to tick
         TimeUnit.SECONDS.sleep(5);
 
-        template.sendBody("servlet:///prototype?servletName=CamelServlet", ExchangePattern.InOut, new String(""));
+        template.sendBody("jetty://http://localhost:9200/amqp-healthcheck", ExchangePattern.InOut, new String(""));
     }
 }
