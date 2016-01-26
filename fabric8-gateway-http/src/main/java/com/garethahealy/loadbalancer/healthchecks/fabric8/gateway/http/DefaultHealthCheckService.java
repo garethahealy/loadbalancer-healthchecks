@@ -23,18 +23,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.management.NotCompliantMBeanException;
+import javax.management.StandardMBean;
+
 import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultHealthCheckService implements HealthCheckService {
+public class DefaultHealthCheckService extends StandardMBean implements HealthCheckService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHealthCheckService.class);
 
     private AtomicBoolean isDead = new AtomicBoolean(false);
     private ContextCount contextCount;
 
-    public DefaultHealthCheckService(ContextCount contextCount) {
+    protected DefaultHealthCheckService(Class<?> mbeanInterface) throws NotCompliantMBeanException {
+        super(mbeanInterface);
+    }
+
+    public DefaultHealthCheckService() throws NotCompliantMBeanException {
+        this(HealthCheckService.class);
+    }
+
+    public DefaultHealthCheckService(ContextCount contextCount) throws NotCompliantMBeanException {
+        this(HealthCheckService.class);
+
         this.contextCount = contextCount;
     }
 

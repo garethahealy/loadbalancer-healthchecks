@@ -25,13 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.NotCompliantMBeanException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class DefaultHealthCheckServiceTest {
 
     @Test
-    public void isAlive() {
+    public void isAlive() throws NotCompliantMBeanException {
         Map<String, List<String>> gatewayJson = new HashMap<String, List<String>>();
         gatewayJson.put("/hawtio-swagger/", Collections.unmodifiableList(Arrays.asList("http://10.20.1.21:8183/hawtio-swagger")));
         gatewayJson.put("/my-service/", Collections.unmodifiableList(Arrays.asList("http://10.20.1.21:8184/my-service")));
@@ -46,7 +48,7 @@ public class DefaultHealthCheckServiceTest {
     }
 
     @Test
-    public void isDeadDueToCountMissmatch() {
+    public void isDeadDueToCountMissmatch() throws NotCompliantMBeanException {
         Map<String, List<String>> gatewayJson = new HashMap<String, List<String>>();
         gatewayJson.put("/hawtio-swagger/", Collections.unmodifiableList(Arrays.asList("http://10.20.1.21:8183/hawtio-swagger")));
         gatewayJson.put("/my-service/", Collections.unmodifiableList(Arrays.asList("http://10.20.1.21:8184/my-service")));
@@ -61,7 +63,7 @@ public class DefaultHealthCheckServiceTest {
     }
 
     @Test
-    public void isDeadDueToMissingContext() {
+    public void isDeadDueToMissingContext() throws NotCompliantMBeanException {
         Map<String, List<String>> gatewayJson = new HashMap<String, List<String>>();
         gatewayJson.put("/my-service/", Collections.unmodifiableList(Arrays.asList("http://10.20.1.21:8184/my-service")));
 
