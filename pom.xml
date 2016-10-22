@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.garethahealy.poms</groupId>
         <artifactId>jboss-fuse-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <groupId>com.garethahealy.loadbalancer-healthchecks</groupId>
     <artifactId>loadbalancer-healthchecks-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>6.3.0-SNAPSHOT</version>
     <name>GarethHealy :: LoadBalancer HealthChecks</name>
 
     <scm>

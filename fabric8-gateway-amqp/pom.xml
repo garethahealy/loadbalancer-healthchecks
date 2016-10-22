@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.garethahealy.loadbalancer-healthchecks</groupId>
         <artifactId>loadbalancer-healthchecks-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>6.3.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>fabric8-gateway-amqp</artifactId>
@@ -14,9 +14,6 @@
     <name>GarethHealy :: LoadBalancer HealthChecks :: Fabric8 Gateway AMQP</name>
 
     <properties>
-        <qpid-version>0.28</qpid-version>
-        <qpid-jms-client-version>0.6.0</qpid-jms-client-version>
-
         <build.osgi.import.before.defaults>
             org.apache.qpid.jms
         </build.osgi.import.before.defaults>
@@ -34,32 +31,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_1.1_spec</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-jms-client</artifactId>
-            <version>${qpid-jms-client-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-client</artifactId>
-            <version>${qpid-version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-quartz2</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jetty8</artifactId>
+            <artifactId>camel-jetty9</artifactId>
             <scope>provided</scope>
         </dependency>
 
