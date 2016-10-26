@@ -25,6 +25,7 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class IsAliveFalseTest extends CamelBlueprintTestSupport {
@@ -34,15 +35,21 @@ public class IsAliveFalseTest extends CamelBlueprintTestSupport {
         return "OSGI-INF/blueprint/camel-context.xml";
     }
 
-    @Test
-    public void httpIsDown() throws Exception {
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+
         RouteDefinition jettyServer = createFakeJettyServer();
         context.addRouteDefinition(jettyServer);
+    }
 
+    @Test
+    public void httpIsDown() throws Exception {
         //Wait for the first quartz timer to tick
         TimeUnit.SECONDS.sleep(5);
 
-        Object body = template.sendBody("jetty://http://localhost:9001/http-healthcheck", ExchangePattern.InOut, new String(""));
+        Object body = template.requestBody("jetty://http://localhost:9001/http-healthcheck", new String(""));
 
         Assert.assertNotNull(body);
         Assert.assertTrue(Boolean.parseBoolean(context.getTypeConverter().convertTo(String.class, body)));
@@ -51,7 +58,8 @@ public class IsAliveFalseTest extends CamelBlueprintTestSupport {
     protected RouteDefinition createFakeJettyServer() throws Exception {
         RouteDefinition jetty = new RouteDefinition();
         jetty.from("jetty:http://0.0.0.0:9000/")
-            .setBody().constant("{\"/hawtio-swagger/\":[\"http://10.20.1.21:8183/hawtio-swagger\"]}");
+            .setBody().constant("{\"/hawtio-swagger/\":[\"http://10.20.1.21:8183/hawtio-swagger\"]}")
+            .routeId("fakeRoute");
 
         return jetty;
     }

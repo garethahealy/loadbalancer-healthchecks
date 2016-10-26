@@ -84,6 +84,7 @@ public class DefaultHealthCheckService extends StandardMBean implements HealthCh
             if (json.containsKey(entry.getKey())) {
                 LOG.debug("Found context {}", entry.getKey());
 
+                @SuppressWarnings("unchecked")
                 List<String> proxys = (List)json.get(entry.getKey());
                 if (proxys.size() == entry.getValue()) {
                     LOG.debug("{} has matching count for expected/found of {}. Gateway is valid.", entry.getKey(), entry.getValue());
