@@ -19,8 +19,8 @@
  */
 package com.garethahealy.loadbalancer.healthchecks.fabric8.gateway.amqp;
 
-import junit.framework.Assert;
 import org.apache.camel.test.blueprint.CamelBlueprintTestSupport;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CamelContextTest extends CamelBlueprintTestSupport {
