@@ -1,4 +1,9 @@
 dist: trusty
+addons:
+  sonarcloud:
+    organization: garethahealy-github
+    token:
+      secure: "T/Qpd21jYtTN3sUNYQQfAJn1sMCKYJMcVfwn+PM92mF8DxLSaSRHcFETqR/ofmQhu6NxsKcYit9ZL50b5flbcLPVnSrIZ/4nNpuaDdA+/U0lP51xR/0Q/aSbTMuT21Hdl6XReOh1WXS49FonB7PSUxx/xwoczpZdofDXJ2jz5/kZ9peZylZQHjsimlv8FjsCvyT+NinNF74UktYRzCRGe1bufEZ3n5huc0BaMt+gp1IoXSWklPIiRM+spv7Dj/8EkPtMLszzNLsirQ9G4srZ/8dfspa36mxpH0n9G0y4ATaDTpKOPdH/mCTHGvNtYfg1HaMNbI6axbJ3HEZe6UxXUsNe/vlvfIlBoAf8daW7cl3CS+PapAfwR+13+VeeI3jManetdGjPX1zju1EBFQDyWnMxjJs2QngOAewdFZAwnuva9uZFGKuCUGzY9+ehzkPFu8aeC7sS1xAex6H0TOCOObuuv5Npzq7PFJhV+VU4GhCIrgmJWO/hn4ICN9Biyg8Uv1VosrgU564ApozL6tbVX+tIxPqxXPVvydeEJlHBu9jFRqZOk1Qe9jB5gKnm7Cu3MqfdmnjoZYknOfv/vutWSlJVs48Vgm2cPmGTNbpWV6CkkXCxcvhpUwhvzsVx2Bo8Xmbk3qt7eZo8P/cRXtuIIJXkf32+kMLrYYVCDE5pzOE="
 language: java
 jdk:
   - oraclejdk8
@@ -9,6 +14,8 @@ before_script:
 - ./mvnw dependency:go-offline -B
 script:
 - ./mvnw clean install -B -Dgpg.skip=true
+- ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -B
 cache:
   directories:
   - $HOME/.m2
+  - $HOME/.sonar/cache
